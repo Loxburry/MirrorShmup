@@ -12,13 +12,19 @@ public class Enemy : MonoBehaviour {
 
     public float      speed = 10f;      // The speed in m/s
 
-    public float      fireRate = 0.3f;  // Seconds/shot (Unused)
+    private float      fireRate = 1.0f;  // Seconds/shot (Unused)
+    private float fireTimer = 0.0f;
 
     public float      health = 10;
 
     public int        score = 100;      // Points earned for destroying this
 
     private BoundsCheck bndCheck;                                            // a
+    public GameObject       projectilePrefab;
+
+    public float            projectileSpeed = 30;
+
+    
 
 
 
@@ -52,6 +58,12 @@ public class Enemy : MonoBehaviour {
 
     void Update() {
 
+        fireTimer += Time.deltaTime;
+        if(fireTimer > fireRate){
+            TempFire();
+            fireRate = (Random.value * 5f);
+            fireTimer = 0f;
+        }
         Move();
 
         if ( bndCheck != null && bndCheck.offDown ) {                    // c
@@ -59,6 +71,20 @@ public class Enemy : MonoBehaviour {
             Destroy( gameObject );
 
         }
+
+    }
+
+    void TempFire() {                                                        // b
+
+        GameObject projGO = Instantiate<GameObject>( projectilePrefab );
+
+        projGO.transform.position = new Vector3(transform.position.x, transform.position.y - 5, transform.position.z);
+
+        Rigidbody rigidB = projGO.GetComponent<Rigidbody>();
+
+        //rigidB.velocity = Vector3.down * projectileSpeed;
+        rigidB.velocity = new Vector3(Random.Range(-1f, 1f) * 10, -projectileSpeed, 0);
+        
 
     }
 
@@ -78,11 +104,11 @@ public class Enemy : MonoBehaviour {
 
       GameObject otherGO = coll.gameObject;                                  // a
 
-      if ( otherGO.tag == "ProjectileHero" ) {                               // b
+      if ( otherGO.tag == "ProjectileEnemy" ) {                               // b
 
         Destroy( otherGO );        // Destroy the Projectile
 
-        Destroy( gameObject );     // Destroy this Enemy GameObject
+        Destroy( this.gameObject );     // Destroy this Enemy GameObject
 
         } else {
 
@@ -91,5 +117,6 @@ public class Enemy : MonoBehaviour {
         }
 
     }
+    
 
 }

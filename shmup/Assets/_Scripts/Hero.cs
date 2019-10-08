@@ -29,11 +29,17 @@ public class Hero : MonoBehaviour
 
     public float            projectileSpeed = 40;
 
+    //movement of mirror
+    private Vector3 mirrorLoc;
+    public GameObject mirror;
+    public KeyCode mirrorUp;
+    public KeyCode mirrorDown;
+    public KeyCode mirrorLeft;
+    public KeyCode mirrorRight;
+
     [Header("Set Dynamically")]
 
     [SerializeField]
-
-    private float           _shieldLevel = 1; // Remember the underscore
  
 
     private GameObject       lastTriggerGo = null;
@@ -78,14 +84,37 @@ void Update () {
 
 
     // Rotate the ship to make it feel more dynamic                      // c
+    //turning this off for now b/c it's breaking the mirror
+    //transform.rotation = Quaternion.Euler(yAxis*pitchMult,xAxis*rollMult,0);
 
-    transform.rotation = Quaternion.Euler(yAxis*pitchMult,xAxis*rollMult,0);
+    //mirror controls
+    if(Input.GetKeyDown(mirrorUp)){
+        mirrorLoc = new Vector3(pos.x,pos.y + 4,0);
+        mirror.transform.position = mirrorLoc;
+        mirror.transform.rotation = Quaternion.Euler(0,0,0);
+    }
+    if(Input.GetKeyDown(mirrorDown)){
+        mirrorLoc = new Vector3(pos.x,pos.y - 5,0);
+        mirror.transform.position = mirrorLoc;
+        mirror.transform.rotation = Quaternion.Euler(0,0,0);
+    }
+    if(Input.GetKeyDown(mirrorLeft)){
+        mirrorLoc = new Vector3(pos.x - 4,pos.y,0);
+        mirror.transform.position = mirrorLoc;
+        mirror.transform.rotation = Quaternion.Euler(0,0,90);
+    }
+    if(Input.GetKeyDown(mirrorRight)){
+        mirrorLoc = new Vector3(pos.x + 4,pos.y,0);
+        mirror.transform.position = mirrorLoc;
+        mirror.transform.rotation = Quaternion.Euler(0,0,90);
+    }
 
-    if ( Input.GetKeyDown( KeyCode.Space ) ) {                           // a
+    //shooting is disabled for now
+    // if ( Input.GetKeyDown( KeyCode.Space ) ) {                           // a
 
-            TempFire();
+    //         TempFire();
 
-        }
+    //     }
 
   }
 
@@ -107,7 +136,7 @@ void Update () {
 
         GameObject go = rootT.gameObject;
 
-        //print("Triggered: "+go.name);
+        print("Triggered: "+go.name);
 
         if (go == lastTriggerGo) {                                           // c
 
@@ -119,41 +148,15 @@ void Update () {
 
 
 
-        if (go.tag == "Enemy") {  // If the shield was triggered by an enemy
-
-            shieldLevel--;        // Decrease the level of the shield by 1
+        if (go.tag == "Enemy" || go.tag == "ProjectileEnemy") {  // If the shield was triggered by an enemy
 
             Destroy(go);          // … and Destroy the enemy                 // e
+            Destroy(this.gameObject);
+            Main.S.DelayedRestart( gameRestartDelay );
 
         } else {
 
             print("Triggered by non-Enemy: "+go.name);                       // f
-
-        }
-
-    }
-
-    public float shieldLevel {
-
-        get {
-
-            return( _shieldLevel );                                          // a
-
-        }
-
-        set {
-
-            _shieldLevel = Mathf.Min( value,4 );                             // b
-
-            // If the shield is going to be set to less than zero
-
-            if (value < 0) {                                                 // c
-
-                Destroy(this.gameObject);
-
-                Main.S.DelayedRestart( gameRestartDelay );
-
-            }
 
         }
 
