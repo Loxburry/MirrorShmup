@@ -28,14 +28,12 @@ public class Hero : MonoBehaviour
     public GameObject       projectilePrefab;
 
     public float            projectileSpeed = 40;
+    public float offset;
 
     //movement of mirror
     private Vector3 mirrorLoc;
     public GameObject mirror;
-    public KeyCode mirrorUp;
-    public KeyCode mirrorDown;
-    public KeyCode mirrorLeft;
-    public KeyCode mirrorRight;
+    
 
     [Header("Set Dynamically")]
 
@@ -82,32 +80,10 @@ void Update () {
     transform.position = pos;
 
 
-
-    // Rotate the ship to make it feel more dynamic                      // c
-    //turning this off for now b/c it's breaking the mirror
-    //transform.rotation = Quaternion.Euler(yAxis*pitchMult,xAxis*rollMult,0);
-
     //mirror controls
-    if(Input.GetKeyDown(mirrorUp)){
-        mirrorLoc = new Vector3(pos.x,pos.y + 4,0);
-        mirror.transform.position = mirrorLoc;
-        mirror.transform.rotation = Quaternion.Euler(0,0,0);
-    }
-    if(Input.GetKeyDown(mirrorDown)){
-        mirrorLoc = new Vector3(pos.x,pos.y - 5,0);
-        mirror.transform.position = mirrorLoc;
-        mirror.transform.rotation = Quaternion.Euler(0,0,0);
-    }
-    if(Input.GetKeyDown(mirrorLeft)){
-        mirrorLoc = new Vector3(pos.x - 4,pos.y,0);
-        mirror.transform.position = mirrorLoc;
-        mirror.transform.rotation = Quaternion.Euler(0,0,90);
-    }
-    if(Input.GetKeyDown(mirrorRight)){
-        mirrorLoc = new Vector3(pos.x + 4,pos.y,0);
-        mirror.transform.position = mirrorLoc;
-        mirror.transform.rotation = Quaternion.Euler(0,0,90);
-    }
+    Vector3 difference = Camera.main.ScreenToWorldPoint(Input.mousePosition) - mirror.transform.position;
+    float rotZ = Mathf.Atan2(difference.y, difference.x) * Mathf.Rad2Deg;
+    mirror.transform.rotation = Quaternion.Euler(0f, 0f, rotZ + offset);
 
     //shooting is disabled for now
     // if ( Input.GetKeyDown( KeyCode.Space ) ) {                           // a
@@ -118,7 +94,8 @@ void Update () {
 
   }
 
-  void TempFire() {                                                        // b
+  //this function is not used for the time being
+  void TempFire() {                                                       
 
         GameObject projGO = Instantiate<GameObject>( projectilePrefab );
 

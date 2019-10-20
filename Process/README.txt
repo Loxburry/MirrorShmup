@@ -1,4 +1,14 @@
-Initial Process
+Midpoint/Final Process Entry
+
+From playtesting, I learned two very important things: the controls for my ship didn't feel good, and that there was almost never a reason to face the mirror in any direction except for up. To fix this, I wanted to change the control schemes for the mirror from arrow keys to rotating based on where the mouse pointer is. This proved to be more difficult than I'd expected, but the end result is a much smoother method of angling the mirror.
+
+Now, to make it so that the player would need to angle the mirror in more places than just upward, I decided to add some more enemy types. Making it so that these enemies would maneuver around the player and shoot at them from different angles forces the player to swing the mirror around much more than my first version, and makes the game much more difficult. 
+
+After making these changes, the game's core gameplay loop feels much closer to what I'd intended it to be. I've also implemented a scoring system, where the player gains points if they reflect bullets back into the enemies. Along with this, I've added a high score that keeps track of the best round the player has had, inviting them to continue playing and beat that score. 
+
+I also wanted to include different bullet types for the enemies, hoping to add a little to the game's variety, but it ended up making everything feel a bit too hectic. Not having the ability to shoot the enemies can make it so quite a few enemies can be on the screen at once, and the added dimension of unpredictable bullet types made the game too difficult. Each enemy shooting the same style of bullet feels much better.
+
+Initial Process Entry
 
 My top 5 Shmup ideas:
 

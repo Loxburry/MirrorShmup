@@ -17,12 +17,15 @@ public class Enemy : MonoBehaviour {
 
     public float      health = 10;
 
-    public int        score = 100;      // Points earned for destroying this
+    public int        pointVal = 10;      // Points earned for destroying this
 
-    private BoundsCheck bndCheck;                                            // a
+    protected BoundsCheck bndCheck;                                            // a
     public GameObject       projectilePrefab;
 
     public float            projectileSpeed = 30;
+
+    public int bulletOffset;
+    private int bulletDirection = 1;
 
     
 
@@ -58,6 +61,17 @@ public class Enemy : MonoBehaviour {
 
     void Update() {
 
+        if(GameObject.Find("_Hero")){
+            var posH = GameObject.Find("_Hero").transform.position;
+            if(posH.y > transform.position.y){
+                bulletDirection = 1;
+            }
+            else{
+                bulletDirection = -1;
+            }
+        }
+        
+        
         fireTimer += Time.deltaTime;
         if(fireTimer > fireRate){
             TempFire();
@@ -76,16 +90,18 @@ public class Enemy : MonoBehaviour {
 
     void TempFire() {                                                        // b
 
-        GameObject projGO = Instantiate<GameObject>( projectilePrefab );
+        if(GameObject.Find("_Hero")){
+            GameObject projGO = Instantiate<GameObject>( projectilePrefab );
 
-        projGO.transform.position = new Vector3(transform.position.x, transform.position.y - 5, transform.position.z);
+            bulletOffset = bulletOffset * bulletDirection;
+            projGO.transform.position = new Vector3(transform.position.x, transform.position.y + bulletOffset, transform.position.z);
 
-        Rigidbody rigidB = projGO.GetComponent<Rigidbody>();
+            Rigidbody rigidB = projGO.GetComponent<Rigidbody>();
 
-        //rigidB.velocity = Vector3.down * projectileSpeed;
-        rigidB.velocity = new Vector3(Random.Range(-1f, 1f) * 10, -projectileSpeed, 0);
-        
-
+            var heroP = GameObject.Find("_Hero").transform.position;
+            // bulletDirection should only be set to 1 or -1: 1 shoots up, -1 shoots down
+            rigidB.velocity = new Vector3(heroP.x, bulletDirection * projectileSpeed, 0);
+        }
     }
 
 
@@ -106,13 +122,15 @@ public class Enemy : MonoBehaviour {
 
       if ( otherGO.tag == "ProjectileEnemy" ) {                               // b
 
+        scoreScript.S.UpdateScore(pointVal);
+
         Destroy( otherGO );        // Destroy the Projectile
 
         Destroy( this.gameObject );     // Destroy this Enemy GameObject
 
         } else {
 
-            print( "Enemy hit by non-ProjectileHero: " + otherGO.name );     // c
+            print( "Enemy hit by " + otherGO.name );     // c
 
         }
 

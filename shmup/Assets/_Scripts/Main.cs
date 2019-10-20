@@ -23,7 +23,6 @@ public class Main : MonoBehaviour {
     public float             enemyDefaultPadding = 1.5f; // Padding for position
 
 
-
     private BoundsCheck      bndCheck;
 
 
@@ -86,7 +85,7 @@ public class Main : MonoBehaviour {
 
 
         // Invoke SpawnEnemy() again
-
+        enemySpawnPerSecond += 0.05f;
         Invoke( "SpawnEnemy", 1f/enemySpawnPerSecond );                      // g
 
     }
